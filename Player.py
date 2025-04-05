@@ -22,6 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
+        self.jumping = False
+
     def move(self):
         self.acc = vec(0, 0.5)
 
@@ -46,12 +48,35 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self, platforms):
         hits = pygame.sprite.spritecollide(self, platforms, False)
-        if hits:
+        if hits and not self.jumping:
+            self.jumping = True
             self.vel.y = -15
 
+    def cancel_jump(self):
+        if self.jumping and self.vel.y < -3:
+            self.vel.y = -3
+            self.jumping = False
+
     def update(self, platforms):
+        self.check_y_collisions(platforms)
+        self.check_x_collisions(platforms)
+
+    def check_y_collisions(self, platforms):
         hits = pygame.sprite.spritecollide(self, platforms, False)
         if self.vel.y > 0:
             if hits:
-                self.pos.y = hits[0].rect.top + 1
-                self.vel.y = 0
+                if self.pos.y < hits[0].rect.bottom:
+                    self.pos.y = hits[0].rect.top + 1
+                    self.vel.y = 0
+                    self.jumping = False
+
+    def check_x_collisions(self, platforms):
+        hits = pygame.sprite.spritecollide(self, platforms, False)
+        if self.vel.x > 0:
+            if hits:
+                if self.pos.x < hits[0].rect.left:
+                    self.pos.x = hits[0].rect.left - 1
+                    self.vel.x = 0
+                if self.pos.x > hits[0].rect.right:
+                    self.pos.x = hits[0].rect.right + 1
+                    self.vel.x = 0
