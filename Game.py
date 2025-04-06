@@ -19,7 +19,8 @@ FRIC = -0.12
 FPS = 60
 
 lg_text = pygame.font.Font(None, 72)
-sm_text = pygame.font.Font(None, 24)
+md_text = pygame.font.Font(None, 24)
+sm_text = pygame.font.Font(None, 20)
 
 frames_per_sec = pygame.time.Clock()
 
@@ -35,12 +36,16 @@ def generate_assets():
     global player_1
     global bottom
     # Create player sprite and bottom platform
+    player_sprite = pygame.image.load("./assets/player_sprite.gif")
     player_1 = Player.Player()
+    player_1.surf = player_sprite
+    player_1.rect = player_1.surf.get_rect(center=(WIDTH / 2, HEIGHT - 30))
 
     bottom = Platform.Platform()
-    bottom.surf = pygame.Surface((WIDTH, 20))
-    bottom.surf.fill((255, 0, 0))
-    bottom.rect = bottom.surf.get_rect(center=(WIDTH / 2, HEIGHT - 10))
+    bottom.surf = pygame.Surface((WIDTH, 40))
+    bottom_sprite = pygame.image.load("./assets/bottom_sprite.gif")
+    bottom.surf = bottom_sprite
+    bottom.rect = bottom.surf.get_rect(center=(WIDTH / 2, HEIGHT - 20))
     bottom.moving = False
 
     all_sprites.add(player_1)
@@ -109,8 +114,8 @@ while True:
                 generate_assets()
                 generate_platforms()
     if not game_over:
-        display_surface.fill((0, 0, 0))
-        score_text = sm_text.render("Score: " + str(player_1.score), True, (0, 255, 0))
+        display_surface.fill((135, 206, 250))
+        score_text = md_text.render("Score: " + str(player_1.score), True, (0, 0, 0))
         display_surface.blit(score_text, (10, 10))
         for platform in platforms:
             platform.move()
@@ -126,6 +131,31 @@ while True:
         for sprite in all_sprites:
             display_surface.blit(sprite.surf, sprite.rect)
 
+        instruction_text = sm_text.render(
+            "CONTROLS: Left and Right Arrows to move",
+            True,
+            (255, 255, 255),
+        )
+        instruction_text_2 = sm_text.render(
+            "Up arrow to jump (hold to jump higher!)",
+            True,
+            (255, 255, 255),
+        )
+        display_surface.blit(
+            instruction_text,
+            (
+                WIDTH / 2 - instruction_text.get_width() / 2,
+                HEIGHT - 35,
+            ),
+        )
+        display_surface.blit(
+            instruction_text_2,
+            (
+                WIDTH / 2 - instruction_text_2.get_width() / 2,
+                HEIGHT - 20,
+            ),
+        )
+
         if player_1.rect.top > HEIGHT:
             game_over = True
         player_1.move()
@@ -138,7 +168,7 @@ while True:
             entity.kill()
             display_surface.fill((0, 0, 0))
             game_over_text = lg_text.render("Game Over", True, (255, 255, 255))
-            retry_text = sm_text.render(
+            retry_text = md_text.render(
                 "Press 'Enter' to try again, or 'Esc' to quit",
                 True,
                 (255, 255, 255),
