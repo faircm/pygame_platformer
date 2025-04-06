@@ -20,6 +20,9 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(
             center=(random.randint(0, WIDTH - 10), random.randint(0, HEIGHT - 30))
         )
+        self.moving = True
+        self.speed = random.randint(-3, 3)
+        self.point_value = abs(self.speed)
 
     def check_collision(self, groupies):
         if pygame.sprite.spritecollideany(self, groupies):
@@ -31,9 +34,17 @@ class Platform(pygame.sprite.Sprite):
                 if (abs(self.rect.top - entity.rect.bottom) < 50) and (
                     abs(self.rect.bottom - entity.rect.top) < 50
                 ):
-                    if abs(self.rect.left - entity.rect.right < 50) or (
-                        abs(self.rect.right - entity.rect.left < 50)
+                    if abs(self.rect.left - entity.rect.right) < 50 or (
+                        abs(self.rect.right - entity.rect.left) < 50
                     ):
                         return True
         C = False
         return False
+
+    def move(self):
+        if self.moving:
+            self.rect.move_ip(self.speed, 0)
+            if self.speed > 0 and self.rect.right > WIDTH:
+                self.rect.right = 0
+            if self.speed < 0 and self.rect.left < 0:
+                self.rect.left = WIDTH

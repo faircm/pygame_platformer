@@ -2,7 +2,7 @@ import sys
 import random
 import time
 import pygame
-from pygame.locals import *
+import pygame.locals
 import Player
 import Platform
 
@@ -41,6 +41,7 @@ def generate_assets():
     bottom.surf = pygame.Surface((WIDTH, 20))
     bottom.surf.fill((255, 0, 0))
     bottom.rect = bottom.surf.get_rect(center=(WIDTH / 2, HEIGHT - 10))
+    bottom.moving = False
 
     all_sprites.add(player_1)
     all_sprites.add(bottom)
@@ -109,6 +110,10 @@ while True:
                 generate_platforms()
     if not game_over:
         display_surface.fill((0, 0, 0))
+        score_text = sm_text.render("Score: " + str(player_1.score), True, (0, 255, 0))
+        display_surface.blit(score_text, (10, 10))
+        for platform in platforms:
+            platform.move()
 
         # Generate new platforms as player moves up
         if player_1.rect.top <= HEIGHT / 3:

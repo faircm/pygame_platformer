@@ -1,5 +1,5 @@
 import pygame
-import pygame.locals as local
+import pygame.locals
 
 # Two dimensional vector
 vec = pygame.math.Vector2
@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.acc = vec(0, 0)
 
         self.jumping = False
+        self.score = 0
 
     def move(self):
         self.acc = vec(0, 0.5)
@@ -64,11 +65,13 @@ class Player(pygame.sprite.Sprite):
     def check_y_collisions(self, platforms):
         hits = pygame.sprite.spritecollide(self, platforms, False)
         if self.vel.y > 0:
-            if hits:
-                if self.pos.y < hits[0].rect.bottom:
-                    self.pos.y = hits[0].rect.top + 1
-                    self.vel.y = 0
-                    self.jumping = False
+            if hits and self.pos.y < hits[0].rect.bottom:
+                if hits[0].point_value > 0:
+                    self.score += hits[0].point_value
+                    hits[0].point_value = 0
+                self.pos.y = hits[0].rect.top + 1
+                self.vel.y = 0
+                self.jumping = False
 
     def check_x_collisions(self, platforms):
         hits = pygame.sprite.spritecollide(self, platforms, False)
