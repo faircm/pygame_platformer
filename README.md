@@ -5,4 +5,4 @@ I've been curious about game development since I was a kid, and while this is ce
 Simply download the repo, cd in, and py Game.py
 
 # Known issues
-The platforms do not like to let you walk off the side.  ¯\\_(ツ)_/¯
+The platforms do not like to let you walk off the side.  ¯\\__(ツ)__/¯
